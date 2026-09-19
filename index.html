@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>पोली-आजीचे घडयाळ..</title>
+
+  <!-- Google Fonts: IBM Plex Sans & IBM Plex Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Devanagari:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"IBM Plex Sans Devanagari"', '"IBM Plex Sans"', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --bg-page: #faf8f5;
+      --card-bg: #ffffff;
+      --card-border: #ebdcd0;
+      --text-main: #1c1917;
+      --text-muted: #57534e;
+      --accent: #d97706;
+      --btn-bg: #ffffff;
+      --btn-border: #e7e5e4;
+      --btn-text: #292524;
+      --btn-hover: #f5f5f4;
+    }
+
+    .dark {
+      --bg-page: #0c0f17;
+      --card-bg: #141b29;
+      --card-border: #232f48;
+      --text-main: #f3f4f6;
+      --text-muted: #94a3b8;
+      --accent: #f59e0b;
+      --btn-bg: #1e293b;
+      --btn-border: #334155;
+      --btn-text: #f8fafc;
+      --btn-hover: #334155;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans Devanagari', 'IBM Plex Sans', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      word-break: normal;
+      overflow-wrap: normal;
+      hyphens: none;
+      -webkit-hyphens: none;
+    }
+
+    /* Strict document formatting: justified without broken words */
+    .story-body {
+      text-align: justify;
+      text-justify: inter-word;
+      word-break: keep-all;
+      overflow-wrap: normal;
+      hyphens: none;
+      -webkit-hyphens: none;
+    }
+
+    .story-body p {
+      text-align: justify;
+      text-justify: inter-word;
+      word-break: keep-all;
+      overflow-wrap: normal;
+      hyphens: none;
+      -webkit-hyphens: none;
+      margin-bottom: 1.15rem;
+      line-height: 1.95;
+    }
+
+    .story-body p.divider-stars,
+    .story-body p.divider-line {
+      text-align: center;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.3em;
+    }
+
+    /* SVG Keyframe Animations */
+    @keyframes sunRaysPulse {
+      0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.85; }
+      50% { transform: rotate(6deg) scale(1.05); opacity: 1; }
+    }
+
+    @keyframes clockHourHand {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes clockMinHand {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes ajiWalkMotion {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2.5px) rotate(-0.5deg); }
+    }
+
+    @keyframes emmaSkipMotion {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4.5px); }
+    }
+
+    @keyframes birdGlide {
+      0% { transform: translate(0px, 0px); }
+      50% { transform: translate(14px, -6px); }
+      100% { transform: translate(0px, 0px); }
+    }
+
+    .anim-sun-rays {
+      animation: sunRaysPulse 6s ease-in-out infinite;
+      transform-origin: 430px 65px;
+    }
+
+    .anim-clock-hour {
+      animation: clockHourHand 120s linear infinite;
+      transform-origin: 250px 75px;
+    }
+
+    .anim-clock-min {
+      animation: clockMinHand 10s linear infinite;
+      transform-origin: 250px 75px;
+    }
+
+    .anim-aji-figure {
+      animation: ajiWalkMotion 2.6s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    .anim-emma-figure {
+      animation: emmaSkipMotion 2s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    .anim-birds-soar {
+      animation: birdGlide 7s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center px-3.5 sm:px-6 py-4 sm:py-8 antialiased">
+
+  <!-- Control Actions Bar: Theme Toggle & Share Button ONLY -->
+  <div class="w-full max-w-[760px] flex items-center justify-end gap-2.5 mb-3">
+    <!-- Theme Toggle -->
+    <button id="themeToggleBtn" type="button" aria-label="Toggle theme" class="p-2.5 rounded-full border shadow-sm transition-colors duration-200" style="background: var(--btn-bg); border-color: var(--btn-border); color: var(--btn-text);">
+      <!-- Sun Icon for Dark Mode -->
+      <svg id="sunIcon" class="w-5 h-5 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+      </svg>
+      <!-- Moon Icon for Light Mode -->
+      <svg id="moonIcon" class="w-5 h-5 block text-slate-700" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+      </svg>
+    </button>
+
+    <!-- Share Button -->
+    <button id="shareActionBtn" type="button" aria-label="Share" class="p-2.5 rounded-full border shadow-sm transition-colors duration-200" style="background: var(--btn-bg); border-color: var(--btn-border); color: var(--btn-text);">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <circle cx="18" cy="5" r="3"></circle>
+        <circle cx="6" cy="12" r="3"></circle>
+        <circle cx="18" cy="19" r="3"></circle>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Document Card Container -->
+  <main class="w-full max-w-[760px] rounded-2xl sm:rounded-3xl border shadow-xl p-5 sm:p-9 md:p-12 transition-colors duration-300" style="background: var(--card-bg); border-color: var(--card-border);">
+
+    <!-- Title from document -->
+    <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center tracking-tight mb-6 sm:mb-8" style="color: var(--text-main);">
+      पोली-आजीचे घडयाळ..
+    </h1>
+
+    <div class="w-full mb-8 rounded-2xl overflow-hidden border p-2 sm:p-3 transition-colors duration-300" style="background: linear-gradient(180deg, rgba(254,243,199,0.45) 0%, rgba(224,242,254,0.3) 50%, rgba(241,245,249,0.2) 100%); border-color: var(--card-border);">
+      <svg class="w-full h-auto select-none rounded-xl" viewBox="0 0 500 290" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="सकाळच्या कोवळ्या उन्हात चालायला निघालेल्या पोली-आजी, छोटी एमा, वाटेतील शाळा आणि घड्याळ">
+        <defs>
+          <linearGradient id="skyDawn" x1="0" y1="0" x2="0" y2="290" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fed7aa" stop-opacity="0.8"/>
+            <stop offset="45%" stop-color="#e0f2fe" stop-opacity="0.65"/>
+            <stop offset="100%" stop-color="#f8fafc" stop-opacity="0.2"/>
+          </linearGradient>
+
+          <linearGradient id="morningSun" x1="395" y1="30" x2="465" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f59e0b"/>
+            <stop offset="100%" stop-color="#fbbf24"/>
+          </linearGradient>
+
+          <linearGradient id="clockDialGrad" x1="210" y1="35" x2="290" y2="115" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#fef3c7"/>
+          </linearGradient>
+
+          <filter id="auraGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+        </defs>
+
+        <!-- Sky Background -->
+        <rect width="500" height="290" rx="12" fill="url(#skyDawn)"/>
+
+        <!-- Animated Dawn Sun Rays -->
+        <g class="anim-sun-rays" filter="url(#auraGlow)">
+          <circle cx="430" cy="65" r="28" fill="url(#morningSun)"/>
+          <g stroke="#f59e0b" stroke-width="2" stroke-linecap="round" opacity="0.8">
+            <line x1="430" y1="26" x2="430" y2="16"/>
+            <line x1="430" y1="104" x2="430" y2="114"/>
+            <line x1="391" y1="65" x2="381" y2="65"/>
+            <line x1="469" y1="65" x2="479" y2="65"/>
+            <line x1="402" y1="37" x2="395" y2="30"/>
+            <line x1="458" y1="93" x2="465" y2="100"/>
+            <line x1="402" y1="93" x2="395" y2="100"/>
+            <line x1="458" y1="37" x2="465" y2="30"/>
+          </g>
+        </g>
+
+        <!-- Chirping Birds Flying Across -->
+        <g class="anim-birds-soar" stroke="#475569" stroke-width="1.8" stroke-linecap="round" fill="none">
+          <path d="M60,48 Q67,42 74,48 Q81,42 88,48"/>
+          <path d="M92,60 Q97,55 102,60 Q107,55 112,60"/>
+        </g>
+
+        <!-- Grocery Store & Neighborhood Architecture -->
+        <path d="M15,225 L15,160 L58,132 L98,160 L98,225 Z" fill="#94a3b8" opacity="0.65"/>
+        <rect x="30" y="170" width="16" height="22" rx="2" fill="#64748b" opacity="0.75"/>
+        <rect x="62" y="170" width="16" height="22" rx="2" fill="#64748b" opacity="0.75"/>
+        <line x1="58" y1="132" x2="58" y2="112" stroke="#475569" stroke-width="2"/>
+        <path d="M58,112 L72,118 L58,124 Z" fill="#ef4444"/>
+
+        <!-- Primary School with Red Tiled Canopy on the right -->
+        <path d="M415,225 L415,168 L485,168 L485,225 Z" fill="#94a3b8" opacity="0.55"/>
+        <polygon points="405,168 450,144 495,168" fill="#ea580c" opacity="0.8"/>
+        <!-- Greenery tree near grocery -->
+        <circle cx="380" cy="180" r="22" fill="#10b981" opacity="0.6"/>
+        <rect x="378" y="196" width="5" height="30" fill="#78350f" opacity="0.7"/>
+
+        <!-- Symbolic Grand Street Clock in the Center Sky -->
+        <g filter="url(#auraGlow)">
+          <circle cx="250" cy="75" r="38" fill="url(#clockDialGrad)" stroke="#d97706" stroke-width="3.5"/>
+          <circle cx="250" cy="43" r="2.2" fill="#92400e"/>
+          <circle cx="282" cy="75" r="2.2" fill="#92400e"/>
+          <circle cx="250" cy="107" r="2.2" fill="#92400e"/>
+          <circle cx="218" cy="75" r="2.2" fill="#92400e"/>
+          
+          <!-- Moving Hour & Minute hands -->
+          <line class="anim-clock-hour" x1="250" y1="75" x2="250" y2="92" stroke="#92400e" stroke-width="3.2" stroke-linecap="round"/>
+          <line class="anim-clock-min" x1="250" y1="75" x2="250" y2="52" stroke="#d97706" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="250" cy="75" r="3.5" fill="#78350f"/>
+        </g>
+
+        <!-- Street Path & Morning Sidewalk -->
+        <path d="M0,232 C120,230 220,235 320,231 C420,228 470,231 500,232 L500,290 L0,290 Z" fill="#cbd5e1" opacity="0.85"/>
+        <line x1="0" y1="231" x2="500" y2="231" stroke="#94a3b8" stroke-width="1.8"/>
+        <line x1="0" y1="265" x2="500" y2="265" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="10 12" opacity="0.7"/>
+
+        <!-- Neighborhood Pet Dog trotting along -->
+        <g transform="translate(115, 222) scale(0.75)">
+          <ellipse cx="20" cy="18" rx="14" ry="9" fill="#d97706"/>
+          <circle cx="33" cy="12" r="7" fill="#d97706"/>
+          <polygon points="31,6 34,1 37,6" fill="#92400e"/>
+          <circle cx="35" cy="11" r="1.3" fill="#1e293b"/>
+          <line x1="12" y1="24" x2="10" y2="33" stroke="#d97706" stroke-width="3" stroke-linecap="round"/>
+          <line x1="18" y1="24" x2="17" y2="33" stroke="#d97706" stroke-width="3" stroke-linecap="round"/>
+          <line x1="26" y1="24" x2="28" y2="33" stroke="#d97706" stroke-width="3" stroke-linecap="round"/>
+          <path d="M8,17 Q2,12 5,6" stroke="#d97706" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- Polly-Aji (Pauline) with her walking stick -->
+        <g class="anim-aji-figure" transform="translate(222, 130)">
+          <!-- Wooden Walking Stick -->
+          <path d="M12,46 L8,114" stroke="#78350f" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M12,46 C16,40 21,44 19,50" fill="none" stroke="#78350f" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Legs & Shoes -->
+          <line x1="29" y1="98" x2="25" y2="114" stroke="#475569" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="41" y1="98" x2="44" y2="114" stroke="#475569" stroke-width="3.5" stroke-linecap="round"/>
+          <ellipse cx="23" cy="115" rx="5" ry="2.8" fill="#1e293b"/>
+          <ellipse cx="46" cy="115" rx="5" ry="2.8" fill="#1e293b"/>
+
+          <!-- Long Dress & Cozy Cardigan Shawl -->
+          <path d="M21,44 L14,100 L54,100 L46,44 Z" fill="#0284c7"/>
+          <path d="M19,42 Q34,53 49,42 L45,76 Q34,70 23,76 Z" fill="#f59e0b" opacity="0.95"/>
+
+          <!-- Arm holding stick -->
+          <path d="M23,48 L14,65 L10,52" fill="none" stroke="#fed7aa" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Face, Hair Bun & Reading Glasses -->
+          <circle cx="34" cy="28" r="12.5" fill="#fed7aa"/>
+          <circle cx="33" cy="19" r="11" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1.2"/>
+          <circle cx="23" cy="16" r="5" fill="#cbd5e1"/>
+          <!-- Glasses -->
+          <circle cx="37" cy="27" r="3.8" fill="none" stroke="#0369a1" stroke-width="1.4"/>
+          <path d="M33,27 L30,27" stroke="#0369a1" stroke-width="1.4"/>
+          <path d="M36,34 Q39,37 42,34" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round"/>
+
+          <!-- Arm holding Little Emma's Hand -->
+          <path d="M44,52 L60,68" fill="none" stroke="#fed7aa" stroke-width="3.8" stroke-linecap="round"/>
+        </g>
+
+        <!-- Little Girl Emma Joyfully Walking Alongside -->
+        <g class="anim-emma-figure" transform="translate(282, 168)">
+          <path d="M0,32 L11,26" stroke="#fed7aa" stroke-width="3" stroke-linecap="round"/>
+
+          <line x1="13" y1="58" x2="11" y2="76" stroke="#fed7aa" stroke-width="2.8" stroke-linecap="round"/>
+          <line x1="23" y1="58" x2="25" y2="76" stroke="#fed7aa" stroke-width="2.8" stroke-linecap="round"/>
+          <ellipse cx="9" cy="77" rx="3.8" ry="2.2" fill="#dc2626"/>
+          <ellipse cx="27" cy="77" rx="3.8" ry="2.2" fill="#dc2626"/>
+
+          <!-- Dress and tiny school satchel -->
+          <path d="M11,26 L4,60 L31,60 L24,26 Z" fill="#ec4899"/>
+          <rect x="22" y="30" width="8" height="15" rx="2.5" fill="#8b5cf6"/>
+
+          <!-- Head & Ponytail -->
+          <circle cx="17" cy="17" r="9" fill="#fed7aa"/>
+          <path d="M10,15 C10,7 24,7 24,15 Z" fill="#b45309"/>
+          <path d="M23,13 Q30,11 29,20" fill="none" stroke="#b45309" stroke-width="2.8" stroke-linecap="round"/>
+          <circle cx="19" cy="17" r="1.2" fill="#1e293b"/>
+          <path d="M17,22 Q20,25 22,22" fill="none" stroke="#dc2626" stroke-width="1.3" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="story-body text-base sm:text-lg text-slate-800 dark:text-slate-200">
+
+      <p>
+        माझं नाव पाऊलिन. गेल्याच महिन्यात पंचाहत्तरी उलटली माझी. पंधरा वर्षांपूर्वी माझा नवरा टॉम गेला तेव्हापासून मी या छोट्याश्या घरात राहते. एकटीच.
+      </p>
+
+      <p>
+        घरात खायला उठणाऱ्या एकटेपणावर, विशेषतः सकाळी जाणवणाऱ्या एकाकीपणावर मात करण्याचा एक प्रयत्न म्हणून मी नियमितपणे फिरायला जाते. व्यायामाही होतो आणि जरा बदलही. शिरस्ताच आहे म्हणाना तो माझा.
+      </p>
+
+      <p>
+        सकाळी बरोब्बर साडेसहाच्या ठोक्याला बाहेर पडायचे, म्हातारपावलांनी घरासमोरच्या रस्त्यावरून उजवीकडे दोन फर्लांगभर अंतर जायचे, तिथल्या वाण्याच्या दुकानापाशी डावीकडे वळायचे आणि पुढे जाऊन प्राथमिक शाळेसमोरील रस्त्यावरून पाऊण तासाने - बरोब्बर सव्वा-सात वाजता घरात परत. उन्हाळा असो वा हिवाळा, हा माझा शिरस्ता अबाधित होता, अगदी महिन्याभरापूर्वीपर्यंत!
+      </p>
+
+      <p>
+        मागच्या महिन्यात घरातल्या घरात अडखळण्याचे निमित्त होऊन उजव्या पायाला जरा दुखावले. डॉक्टरांनी सहा आठवडे सक्त विश्रांती घ्यायला सांगितली आणि शिरस्ता मोडला.
+      </p>
+
+      <p>
+        डॉक्टरी आज्ञा ऐकून जरा चिडचिड झाली खरी, पण मनात कुठेतरी स्वतःच गळ्यात अडकवून घेतलेले जोखड काढून ठेवण्यासाठी कारण गवसले म्हणून गार वाटल्याचेही जाणवून गेले. बस्स झाला आता नियमित व्यायाम. केला की इतकी वर्षे नेटाने. काय हरकत आहे दोन महीने नाही केला तर. असे काहीसे.
+      </p>
+
+      <p>
+        माझ्या या सक्तीच्या विश्रांतीपर्वाचा पहिला आठवडा तसा बरा गेला. जाग आली तरी दुलई लपेटून झोपेची आणखी थोडी आराधना करण्याचा आनंद घेतला. कधी नव्हे तो भरपूर टीव्ही बघितला. परगावी सुट्टीवर आल्यासारखे वाटले.
+      </p>
+
+      <p>
+        दुसरा आठवडा उजाडला आणि घराची बेल वाजली. लंगडत्या पायाने जाऊन दरवाजा उघडला आणि पाहते तर दारात तो कोपऱ्यावरचा वाणी!
+      </p>
+
+      <p class="italic">
+        “काय झाले आजी, दिसला नाहीत? तब्येत बरी आहे ना?”
+      </p>
+
+      <p class="italic">
+        “काही नाही हो, जरा पायाला लागल्याचे निमित्त झाले. इतकेच”
+      </p>
+
+      <p class="italic">
+        “अस्स होय. मग तुम्हाला काही वाणसामान हवे आहे का? आणून देतो”
+      </p>
+
+      <p>
+        वास्तविक पाहता मी त्याची नियमित ग्राहक नाही. पण तरीही त्याने आस्थेने विचारले.
+      </p>
+
+      <p>
+        <span class="italic">“नाही. नकोय काही.”</span> म्हणल्यावर थोड्याश्या नाखुषीनेच गेला.
+      </p>
+
+      <p>
+        तो अनोळखी वाणी का बरं येऊन गेला असावा हा विचार मनात घोळत असतानाच दोन दिवसांनी सकाळी प्राथमिक शाळेच्या मुख्याध्यापिका श्रीमती हेंडरसन दारात येऊन उभ्या ठाकल्या. त्यांना तर मी आतापर्यंत भेटले देखील नव्हते.
+      </p>
+
+      <p class="italic">
+        “काय झालं आजी? शाळेचा रखवालदार सांगत होता की आठवडा झाला आजींचा काहीच पत्ता नाही. म्हणलं बघूनच यावं, म्हणून आले. बऱ्या आहात ना?”
+      </p>
+
+      <p>
+        जरा रागच आला मला. थोड्याश्या घुश्यातच मी म्हणाले, <span class="italic">“पायाला लागलं माझ्या आणि बाकीच्यांनाच….”</span>
+      </p>
+
+      <p>
+        माझं ते रागीट उत्तर अर्धवट तोडत त्या म्हणाल्या <span class="italic">“ओह.. मग ठीक आहे. आम्हाला सगळ्यांना वेगळीच काळजी वाटायला लागली होती.”</span>
+      </p>
+
+      <p>
+        त्यावर अजूनच त्रासिक स्वरात मी म्हणाले, <span class="italic">“तुम्हा अनोळखी लोकांना माझी इतकी काळजी हो कशाला?”</span>
+      </p>
+
+      <p>
+        त्यावर अत्यंत आश्चर्याच्या सुरात त्या म्हणाल्या, <span class="italic">“काळजी का वाटली म्हणजे काय पोलीआजी? अहो तुम्ही तर या परिसरातल्या सगळ्यांच्या घड्याळयाचे काटे आहात!”</span>
+      </p>
+
+      <p>
+        मी? घड्याळ? काहीच कळेनासे झाले मला.
+      </p>
+
+      <p>
+        दुसऱ्या दिवशी सकाळी घराच्या दरवाज्याखालून एक पाकीट आत सरकवलेले दिसले. त्यात एका कार्डावर रंगीत खडूने चितारलेली हातात काठी घेतलेली आजी होती आणि खाली लिहिले होते <span class="italic">‘गेट वेल सून’ ~ एमा (इयत्ता पहिली). </span>
+      </p>
+
+      <p>
+        आता ही चिमुरडी एमा कोण? मी तर बुचकळ्यांतच पडले.
+      </p>
+
+      <p>
+        मग अजून काही कार्डे आणि पत्रे येऊन पडली. पूर्णपणे अपरिचित मंडळींची. जवळच राहणाऱ्या एका प्राणी मित्र जोडप्याचे, दूधवाल्याचे आणि वाण्याच्या दुकानात कामाला असलेल्या मुलाचे. सगळ्यांचा मायना एकच <span class="italic">“कशा आहात पोली आजी?”</span> आणि <span class="italic">“वुई मिस यू!”.</span>
+      </p>
+
+      <p>
+        आता मात्र मी पूर्ण भांबावून गेले. सरळ फोन उचलला, शाळेचा नंबर फिरवला आणि हेंडरसन बाईंना थेट प्रश्न केला <span class="italic">“मी सकाळची चालायला बाहेर पडत नाहीये याची तुम्हा सर्वांना इतकी का काळजी लागून राहिली आहे?”</span>
+      </p>
+
+      <p>
+        बराच वेळ त्या काहीच बोलल्या नाहीत. मग म्हणाल्या <span class="italic">“तुम्हाला खरंच माहिती नाही?”</span>
+      </p>
+
+      <p class="italic">
+        “माहिती? कशाबद्दल?”
+      </p>
+
+      <p class="italic">
+        “आजी, अहो गेली पंधरा वर्षे तुम्ही या परिसरातल्या अनेकांचे गजराचे घडयाळ आहात!”
+      </p>
+
+      <p class="italic">
+        “तुम्ही चालताना दिसलात की वाण्याकडे कामाला असलेल्या मुलाला समजते की दुकान उघडायची वेळ झाली. शाळेच्या रखवालदाराला उमगते की आता स्कूलबस येईलच, मोठा दरवाजा उघडून ठेवायला हवा. शाळेजवळ राहणाऱ्या मुलांनी तुम्हाला येताना पाहिले की त्यांच्या पालकांना खात्री असते की मुलांना शाळेत जायला उशीर झालेला नाही; आणि ते प्राणी-प्रेमी जोडपे, तुम्ही घरासमोरून गेलात की आजूबाजूच्या कुत्र्या-मांजरांना खायला द्यायला बाहेर पडतात. तुम्ही, पोली आजी तुम्ही इतक्या सगळ्यांच्या दिवसाची सुरुवात आहात!”
+      </p>
+
+      <p>
+        काहीच बोलू शकले नाही मी पुढे. थक्क होऊन मटकन खुर्चीत बसले.
+      </p>
+
+      <p>
+        <span class="italic">“आणि एमा”,</span> हेंडरसन बाई पुढे सांगू लागल्या, <span class="italic">“तिची एक वेगळीच कथा आहे. रोज सकाळी ती शाळेत जायला का कोणास ठाऊक पण घाबरते. शाळेच्या दारात आईचा हात घट्ट धरून कावऱ्याबावऱ्या चेहऱ्याने उभी असते. पण तुम्हाला बघितले की मात्र लगेच आईचा हात सोडून वर्गाकडे पळायला लागते. का? ते तिलाही कळत नाही आणि आम्हालाही आजवर उमगलेले नाही.”</span>
+      </p>
+
+      <p>
+        माझ्या तोंडून शब्दच फुटेनात.
+      </p>
+
+      <p>
+        <span class="italic">“आमची समजूत आहे की तुम्हाला हे सगळं ठाऊक आहे”; </span><span class="italic">मृदू स्वरात हेंडरसन बाई पुढे सांगू लागल्या </span><span class="italic">“आणि हे सर्व तुम्ही मुद्दाम करता; आम्हा सर्वांसाठी.”</span>
+      </p>
+
+      <p class="divider-stars font-bold text-amber-600 dark:text-amber-400">
+        ***
+      </p>
+
+      <p>
+        पण, पण यातले काहीच मी ठरवून करत नव्हते. मी तर फक्त एकाकीपणावर उपाय आणि झालाच तर जरासा व्यायाम म्हणून चालत होते. माझ्या एकटीकरता.
+      </p>
+
+      <p class="divider-stars font-bold text-amber-600 dark:text-amber-400">
+        ***
+      </p>
+
+      <p>
+        काल माझा पाय दुरुस्त झाला आणि बरोब्बर साडेसहाच्या ठोक्याला बाहेर पडले. चालायला.
+      </p>
+
+      <p>
+        वाण्याचे दुकान उघडत होते, त्याने आणि त्याच्याकडे कामाला असलेल्या मुलाने जोरजोराने हात हलवून माझे स्वागत केले. प्राणीप्रेमी जोडप्याने आनंदातिशयाने ‘हॅलो’ केले आणि शाळेच्या रखवालादाराने लांबूनच पण लवून दंडवत घातला.
+      </p>
+
+      <p>
+        आणि ती चिमुरडी एमा, मला पहाताक्षणी <span class="italic">“आज्जी!!”</span> म्हणून येऊन बिलगली आणि म्हणाली <span class="italic">“मी उद्यापासून तुमच्याबरोबर चालत शाळेला येऊ का?”</span> मी नकार देऊच शकत नव्हते..
+      </p>
+
+      <p class="divider-stars font-bold text-amber-600 dark:text-amber-400">
+        ***
+      </p>
+
+      <p>
+        आज सकाळी एमा घराच्या दारात माझी वाट पहात उभीच होती. माझा हात हलकेच धरून शाळेच्या दारात पोहोचेपर्यंत अखंड बडबडत काहीतरी सांगत होती आणि तिची आई गहिवरल्या डोळ्यांनी आमच्या मागून थोडे अंतर ठेवून येत होती.
+      </p>
+
+      <p>
+        शाळेच्या दारात चिमुकल्या हातांनी माझे दोनही हात पकडून म्हणाली <span class="italic">“उद्या सकाळी याच वेळेस?” </span>
+      </p>
+
+      <p class="italic">
+        “नक्कीच!”
+      </p>
+
+      <p class="divider-stars font-bold text-amber-600 dark:text-amber-400">
+        ***
+      </p>
+
+      <p>
+        गेली पंधरा वर्षे मी याच मार्गावर चालत होते परंतु केवळ स्वतःचा एकटेपणा विसरता यावा म्हणून चालते आहे या समजुतीत होते मी.
+      </p>
+
+      <p>
+        पण, पण आता कळते आहे की प्रत्यक्षात मी कित्येकांच्या दिवसाची सुरुवात अलगदपणे गुंफून देणारी रेशमी दोरी होते. त्यांच्या जीवनगाण्याचा स्वरसप्तकातला पहिला ‘सा’ होते, मनगटावर घड्याळ न बांधता देखील मी अनेकांसाठी गजराचा ठोका होते; माझ्या नकळत. एकटी नव्हतेच मी!
+      </p>
+
+      <p class="divider-stars font-bold text-amber-600 dark:text-amber-400">
+        ***
+      </p>
+
+      <p>
+        खरंच, इतरांसाठी आणि स्वतःसाठी देखील आपण कोण आहोत याची आपल्याला बऱ्याचदा पुसटशी देखील कल्पना नसते. हातून सहज म्हणून केल्या जाणाऱ्या अगदी क्षुल्लकशा, साध्या-सोप्या कृती कदाचित कोणाच्या तरी आयुष्यातल्या घड्याळाचे काटे असू शकतात. तो एखाद्यासाठी ‘ऑल इज वेल’ असल्याची खात्री देणारा संकेत असू शकतो; कोणाच्यातरी धैर्याचं ते एकमेव कारण असू शकतं.
+      </p>
+
+      <p>
+        त्यामुळे थांबू नका. ‘मला काहीच महत्त्व नाही’ असा चुकूनही विचार करू नका. कोणाचं लक्ष नाहीये, असं समजू नका. लोकांचं लक्ष असतं. कदाचित तुमचं फक्त ‘मागील पानावरून पुढे’ जात राहणंसुद्धा एखाद्याला त्याचा नवा दिवस सुरू करण्याची उमेद देऊ शकतं.
+      </p>
+
+      <p>
+        तेव्हां निरपेक्ष भावनेने पुढे जात रहा. तुम्ही एकटे नाही, कोणीतरी तुमच्यावर भिस्त ठेवून आहे. जरी तुम्हाला ते कोण आहे हे कधीच समजणार नसलं, तरीही; कृतज्ञतेने!
+      </p>
+
+      <p class="divider-line text-slate-400 dark:text-slate-600 tracking-widest">
+        ___
+      </p>
+
+      <p class="italic">
+        गुढीपाडवा; चैत्र शुद्ध प्रतिपदा, शालिवाहन शके १९४८ | ख्रिस्ताब्द १९ मार्च २०२६ 
+      </p>
+
+      <p class="italic text-sm sm:text-base opacity-90">
+        Thanks to an unknown author of an inspiring story; stumbled upon on the internet..
+      </p>
+
+      <p class="divider-stars font-bold text-amber-600 dark:text-amber-400 mt-4 mb-2">
+        ****
+      </p>
+
+    </div>
+
+  </main>
+
+  <div id="toastNotification" class="fixed bottom-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-sm font-medium px-5 py-2.5 rounded-full shadow-2xl flex items-center gap-2 pointer-events-none">
+    <svg class="w-4 h-4 text-emerald-400 dark:text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <span id="toastMsg">लिंक कॉपी झाली!</span>
+  </div>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      const sunIcon = document.getElementById('sunIcon');
+      const moonIcon = document.getElementById('moonIcon');
+      const shareActionBtn = document.getElementById('shareActionBtn');
+      const toastNotification = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMsg');
+      let toastHideTimeout = null;
+
+      function showToast(message) {
+        if (!toastNotification || !toastMsg) return;
+        toastMsg.textContent = message;
+        toastNotification.classList.remove('translate-y-24', 'opacity-0');
+        toastNotification.classList.add('translate-y-0', 'opacity-100');
+
+        if (toastHideTimeout) clearTimeout(toastHideTimeout);
+        toastHideTimeout = setTimeout(() => {
+          toastNotification.classList.remove('translate-y-0', 'opacity-100');
+          toastNotification.classList.add('translate-y-24', 'opacity-0');
+        }, 2600);
+      }
+
+      function updateTheme(isDark) {
+        if (isDark) {
+          html.classList.add('dark');
+          sunIcon.classList.remove('hidden');
+          moonIcon.classList.add('hidden');
+          try { localStorage.setItem('app-theme-preference', 'dark'); } catch (e) {}
+        } else {
+          html.classList.remove('dark');
+          sunIcon.classList.add('hidden');
+          moonIcon.classList.remove('hidden');
+          try { localStorage.setItem('app-theme-preference', 'light'); } catch (e) {}
+        }
+      }
+
+      // Initial theme detection
+      let savedTheme = null;
+      try { savedTheme = localStorage.getItem('app-theme-preference'); } catch (e) {}
+      const systemWantsDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      updateTheme(savedTheme ? savedTheme === 'dark' : systemWantsDark);
+
+      // Theme toggle click handler
+      themeToggleBtn.addEventListener('click', () => {
+        const isCurrentDark = html.classList.contains('dark');
+        updateTheme(!isCurrentDark);
+      });
+
+      // Share button click handler
+      shareActionBtn.addEventListener('click', async () => {
+        const pageTitle = document.title || 'पोली-आजीचे घडयाळ..';
+        const pageUrl = window.location.href;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: pageTitle,
+              text: pageTitle,
+              url: pageUrl
+            });
+            return;
+          } catch (err) {
+            if (err.name === 'AbortError') return;
+          }
+        }
+
+        // Fallback: document.execCommand('copy')
+        const hiddenField = document.createElement('input');
+        hiddenField.value = pageUrl;
+        document.body.appendChild(hiddenField);
+        hiddenField.select();
+        hiddenField.setSelectionRange(0, 99999);
+
+        try {
+          const successful = document.execCommand('copy');
+          if (successful) {
+            showToast('लिंक क्लिपबोर्डवर कॉपी झाली!');
+          } else {
+            showToast('कृपया ही लिंक शेअर करा: ' + pageUrl);
+          }
+        } catch (err) {
+          showToast('लिंक कॉपी करता आली नाही');
+        } finally {
+          document.body.removeChild(hiddenField);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
